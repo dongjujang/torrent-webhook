@@ -21,27 +21,24 @@ app.post('/:collection', function(req, res){
     res.status(500).json('');
     return;
   }
-  var docs = req.body;
 
-  for (i = 0 ;i < docs.length ; i++) {
-
-    var subject = docs[i].subject;
-    var magnet = docs[i].magnet;
-    if (!subject || !magnet) {
-      res.status(400).json('');
-      return;
-    }
-
-    res.json('');
-
-    var collection = iotorrent.db.collection(req.params.collection);
-    collection.findOne({magnet: magnet}, function(err, doc){
-      if (err || doc) return;
-
-      collection.insert(docs[i], function(err, result){
-      });
-    });
+  var subject = req.body.subject;
+  var magnet = req.body.magnet;
+  if (!subject || !magnet) {
+    res.status(400).json('');
+    return;
   }
+
+  res.json('');
+
+  var collection = iotorrent.db.collection(req.params.collection);
+  collection.findOne({magnet: magnet}, function(err, doc){
+    if (err || doc) return;
+
+    collection.insert(req.body, function(err, result){
+    });
+  });
+
 });
 
 app.listen(port);
