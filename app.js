@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var multer = require('multer');
 var iotorrent = require('./iotorrent');
 var app = express();
@@ -10,6 +11,7 @@ mongoClient.connect('mongodb://mongodb/iotorrent', function(err, db) {
   iotorrent.db = db;
 });
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({dest: './uploads/'}));
 
 app.get('/*', function(req, res){
