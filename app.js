@@ -1,0 +1,47 @@
+var express = require('express');
+var multer = require('multer');
+var iotorrent = require('./iotorrent');
+var app = express();
+var port = process.env.PORT || 8888;
+var mongoClient = require('mongodb').MongoClient;
+
+mongoClient.connect('mongodb://mongodb/iotorrent', function(err, db) {
+  if (err) return;
+  iotorrent.db = db;
+});
+
+app.use(multer({dest: './uploads/'}));
+
+app.get('/*', function(req, res){
+  res.send('');
+});
+
+app.post('/:collection', function(req, res){
+  if (!iotorrent.db) {
+    res.status(500).json('');
+    return;
+  }
+  var docs = req.body;
+
+  for (i = 0 ;i < docs.length ; i++) {
+
+    var subject = docs[i].subject;
+    var magnet = docs[i].magnet;
+    if (!subject || !magnet) {
+      res.status(400).json('');
+      return;
+    }
+
+    res.json('');
+
+    var collection = iotorrent.db.collection(req.params.collection);
+    collection.findOne({magnet: magnet}, function(err, doc){
+      if (err || doc) return;
+
+      collection.insert(docs[i], function(err, result){
+      });
+    });
+  }
+});
+
+app.listen(port);
