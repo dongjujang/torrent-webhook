@@ -24,6 +24,27 @@ app.post('/:collection', function(req, res){
     return;
   }
 
+  if (req.params.collection == 'movie_eng') {
+    var subject = req.body.subject;
+    var torrent_file = req.body.torrent_file;
+    req.body.number = Number(req.body.number);
+    if (!subject || !torrent_file) {
+      res.status(400).json('');
+      return;
+    }
+
+    res.json('');
+
+    var collection = iotorrent.db.collection(req.params.collection);
+    collection.findOne({torrent_file: torrent_file}, function(err, doc){
+      if (err || doc) return;
+
+      collection.insert(req.body, function(err, result){
+      });
+    });
+    return;
+  }
+
   var subject = req.body.subject;
   var magnet = req.body.magnet;
   req.body.number = Number(req.body.number);
