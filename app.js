@@ -48,6 +48,7 @@ app.post('/:collection', function(req, res){
   var subject = req.body.subject;
   var magnet = req.body.magnet;
   req.body.number = Number(req.body.number);
+  var number = req.body.number;
   if (!subject || !magnet) {
     res.status(400).json('');
     return;
@@ -56,7 +57,7 @@ app.post('/:collection', function(req, res){
   res.json('');
 
   var collection = iotorrent.db.collection(req.params.collection);
-  collection.findOne({magnet: magnet}, function(err, doc){
+  collection.findOne({number: number}, function(err, doc){
     if (err || doc) return;
 
     collection.insert(req.body, function(err, result){
